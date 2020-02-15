@@ -1,6 +1,7 @@
 package com.tikal.cmdls.model
 
 import io.reactivex.Flowable
+import io.reactivex.Maybe
 import io.reactivex.Single
 import io.vertx.reactivex.pgclient.PgPool
 import io.vertx.reactivex.sqlclient.Row
@@ -27,18 +28,21 @@ class KeywordDao {
 
     fun findAll(): Flowable<Keywords> =
             client.rxQuery("SELECT id, keyword FROM $TABLE_NAME")
-                    .flatMapPublisher { rowSet ->
-                        Flowable.fromIterable(rowSet.asIterable())
+                    .flatMapPublisher { Flowable.fromIterable(it.asIterable()) }
+                    .map (::rowSetToKeyword)
 
-                    }
-                    .map { row -> rowSetToKeyword(row) }
+    fun find(id: Long): Maybe<Keywords> =
+            client.rxQuery("SELECT id, keyword FROM $TABLE_NAME WHERE id=$id")
+                    .flatMapPublisher { Flowable.fromIterable(it.asIterable()) }
+                    .map (::rowSetToKeyword)
+                    .firstElement()
 
     private fun rowSetToKeyword(row: Row): Keywords =
             Keywords(row.getLong("id"), row.getString("keyword"))
 
     @Transactional
     fun add(keyword: String): Single<Long> =
-            client.rxPreparedQuery("INSERT INTO $TABLE_NAME (keyword) VALUES ($1) RETURNING (id)", Tuple.of(keyword))
+            client.rxPreparedQuery("INSERT INTO $TABLE_NAME (keyword) VALUES (\$1) RETURNING (id)", Tuple.of(keyword))
                     .flatMapPublisher { rowSet -> Flowable.fromIterable(rowSet.asIterable()) }
                     .map { it.getLong("id") }
                     .firstElement()

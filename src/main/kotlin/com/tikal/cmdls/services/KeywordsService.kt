@@ -23,6 +23,8 @@ class KeywordsService {
 
     fun getAll() = keywordsDao.findAll()
 
+    fun get(id: Long) = keywordsDao.find(id)
+
     fun addNew(keyword: String) =
             keywordsDao.add(keyword)
 
