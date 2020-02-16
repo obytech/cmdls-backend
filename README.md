@@ -3,8 +3,7 @@ This is the backend service for cmdls.
 
 # Installation
 * Install graalvm:
-https://www.graalvm.org/docs/getting-started/#install-graalvm
-
+https://quarkus.io/guides/building-native-image
 
 and set the GRAALVM_HOME to the root of graalvm extracted dir.  
 * Then, from the project root dir, exec
@@ -20,8 +19,8 @@ $ ./target/cmdls-0.0.1-SNAPSHOT-runner
 
 # Postgres server - Docker
  ```
-docker run --ulimit memlock=-1:-1 -it --rm=true --memory-swappiness=0 --name cmdls_postgres -e POSTGRES_USER=cmdls_user \ 
--e POSTGRES_PASSWORD=cmdls_passw0rd -e POSTGRES_DB=cmdls_db -p 5432:5432 postgres:10.5)
+docker run --ulimit memlock=-1:-1 -it --rm=true --memory-swappiness=0 --name cmdls_postgres -e POSTGRES_USER=cmdls_user \
+-e POSTGRES_PASSWORD=cmdls_passw0rd -e POSTGRES_DB=cmdls_db -p 5432:5432 postgres:10.5
 ```
 
 
